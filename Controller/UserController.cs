@@ -2,8 +2,10 @@ using Education.DTO;
 using Education.Models;
 using Education.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization; // ✅ Add this using directive
 using System;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Education.Controllers
 {
@@ -61,5 +63,49 @@ namespace Education.Controllers
         {
             return Ok(new { status = "Success", message = "Logged out successfully." });
         }
+
+        [HttpGet("profile")]
+        [Authorize] // ✅ This now works with the added using directive
+        public async Task<IActionResult> GetUserProfile()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { status = "Error", message = "User not authenticated" });
+            }
+
+            try
+            {
+                var profile = await _userService.GetUserProfileAsync(Guid.Parse(userId));
+                return Ok(profile);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { status = "Error", message = ex.Message });
+            }
+        }
+        [HttpPut("profile")]
+        [Authorize] 
+        public async Task<IActionResult> EditUserProfile([FromBody] EditUserProfileDto editDto)
+     {
+      var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+      if (string.IsNullOrEmpty(userId))
+       {
+        return Unauthorized(new { status = "Error", message = "User not authenticated" });
+         }
+
+         try
+       {
+         var updatedProfile = await _userService.EditUserProfileAsync(Guid.Parse(userId), editDto);
+         return Ok(new { status = "Success", message = "Profile updated successfully.", data = updatedProfile });
+        }
+           catch (KeyNotFoundException ex)
+        {
+             return NotFound(new { status = "Error", message = ex.Message });
+         }
+       }
+
     }
 }

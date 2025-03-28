@@ -10,5 +10,7 @@ namespace Education.Services
         Task<User> LoginUserAsync(LoginDto loginDto);
         Task<string> GenerateJwtTokenAsync(User user);
         Task LogoutUserAsync(Guid userId);
+        Task<UserProfileDto> GetUserProfileAsync(Guid userId);
+        Task<UserProfileDto> EditUserProfileAsync(Guid userId, EditUserProfileDto editDto);
     }
 }

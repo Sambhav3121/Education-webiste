@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Education.Data;
+using Education.Data; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -36,7 +36,8 @@ namespace Education.Services
                 Address = registerDto.Address,
                 BirthDate = registerDto.BirthDate,
                 Gender = registerDto.Gender,
-                PhoneNumber = registerDto.PhoneNumber
+                PhoneNumber = registerDto.PhoneNumber,
+                Role = registerDto.Role ?? "Student" // Default role is Student
             };
 
             _context.Users.Add(user);
@@ -44,7 +45,7 @@ namespace Education.Services
             return user;
         }
 
-        public async Task<User?> LoginUserAsync(LoginDto loginDto)
+        public async Task<User> LoginUserAsync(LoginDto loginDto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
@@ -61,7 +62,8 @@ namespace Education.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role) // Add role to JWT
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
@@ -81,6 +83,56 @@ namespace Education.Services
         public async Task LogoutUserAsync(Guid userId)
         {
             // Token invalidation logic if needed (for now, assume logout happens by front-end).
+        }
+
+        public async Task<UserProfileDto> GetUserProfileAsync(Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+    
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            return new UserProfileDto
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                Address = user.Address,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+        }
+
+        public async Task<UserProfileDto> EditUserProfileAsync(Guid userId, EditUserProfileDto editDto)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            user.FullName = editDto.FullName ?? user.FullName;
+            user.Address = editDto.Address ?? user.Address;
+            user.PhoneNumber = editDto.PhoneNumber ?? user.PhoneNumber;
+            user.BirthDate = editDto.BirthDate ?? user.BirthDate;
+            user.Gender = editDto.Gender ?? user.Gender;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return new UserProfileDto
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                BirthDate = user.BirthDate,
+                Gender = user.Gender,
+                Address = user.Address,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
         }
     }
 }
