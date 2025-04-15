@@ -9,7 +9,7 @@ namespace Education.Services
     public interface ICourseService
     {
         Task<Course> CreateCourseAsync(CreateCourseDto createCourseDto);
-        Task<List<CourseDto>> GetAllCoursesAsync();
+        Task<PaginatedResultDto<CourseDto>> GetAllCoursesAsync(int page = 1, int pageSize = 10, string category = null, string search = null);
         Task<CourseDto> GetCourseByIdAsync(Guid courseId);
         Task DeleteCourseAsync(Guid courseId);
     }

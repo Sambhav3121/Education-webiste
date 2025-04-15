@@ -60,9 +60,9 @@ namespace Education.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllCourses()
+        public async Task<IActionResult> GetAllCourses([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string category = null, [FromQuery] string search = null)
         {
-            var courses = await _courseService.GetAllCoursesAsync();
+            var courses = await _courseService.GetAllCoursesAsync(page, pageSize, category, search);
             return Ok(courses);
         }
 
