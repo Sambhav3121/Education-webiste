@@ -115,3 +115,5 @@
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/Education.pdb
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/Education.genruntimeconfig.cache
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/ref/Education.dll
+/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package-lock.json
+/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package.json

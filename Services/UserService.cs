@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Education.Data; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace Education.Services
 {
@@ -31,8 +32,8 @@ namespace Education.Services
             {
                 Id = Guid.NewGuid(),
                 FullName = registerDto.FullName,
-                Email = registerDto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+                Email = registerDto.Email.Trim().ToLower(),  // Trim and lowercase on registration too
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password.Trim()), // Trim password before hashing
                 Address = registerDto.Address,
                 BirthDate = registerDto.BirthDate,
                 Gender = registerDto.Gender,
@@ -47,11 +48,30 @@ namespace Education.Services
 
         public async Task<User> LoginUserAsync(LoginDto loginDto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+            var email = loginDto.Email.Trim().ToLower();
+
+            _logger.LogInformation($"Login attempt for email: {email}");
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+
+            if (user == null)
             {
+                _logger.LogWarning($"Login failed: user with email {email} not found.");
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
+
+            var passwordTrimmed = loginDto.Password.Trim();
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(passwordTrimmed, user.PasswordHash);
+
+            _logger.LogInformation($"Password verification result for {email}: {isPasswordValid}");
+
+            if (!isPasswordValid)
+            {
+                _logger.LogWarning($"Login failed: invalid password for email {email}.");
+                throw new UnauthorizedAccessException("Invalid email or password.");
+            }
+
             return user;
         }
 
@@ -88,7 +108,7 @@ namespace Education.Services
         public async Task<UserProfileDto> GetUserProfileAsync(Guid userId)
         {
             var user = await _context.Users.FindAsync(userId);
-    
+
             if (user == null)
             {
                 throw new KeyNotFoundException("User not found.");

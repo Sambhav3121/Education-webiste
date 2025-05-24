@@ -2,7 +2,7 @@ using Education.DTO;
 using Education.Models;
 using Education.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization; // ✅ Add this using directive
+using Microsoft.AspNetCore.Authorization; 
 using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -33,12 +33,16 @@ namespace Education.Controllers
 
                 return Ok(new { status = "Success", message = "Registration successful.", token });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { status = "Error", message = ex.Message });
-            }
+           catch (Exception ex)
+        {
+        var errorMessage = ex.Message;
+        if (ex.InnerException != null)
+        errorMessage += " | Inner exception: " + ex.InnerException.Message;
+
+        return StatusCode(500, new { status = "Error", message = errorMessage });
         }
 
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {

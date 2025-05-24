@@ -1,5 +1,6 @@
 using Education.DTO;
 using Education.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace Education.Controllers
             _courseService = courseService;
         }
 
+        // Only teachers can create courses
+        [Authorize(Roles = "Teacher")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto createCourseDto)
         {
@@ -45,6 +48,8 @@ namespace Education.Controllers
             }
         }
 
+        // Anyone can get course by id
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCourseById(Guid id)
         {
@@ -59,6 +64,8 @@ namespace Education.Controllers
             }
         }
 
+        // Anyone can get all courses
+        [AllowAnonymous]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllCourses([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string category = null, [FromQuery] string search = null)
         {
@@ -66,6 +73,8 @@ namespace Education.Controllers
             return Ok(courses);
         }
 
+        // Only teachers can delete courses
+        [Authorize(Roles = "Teacher")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(Guid id)
         {

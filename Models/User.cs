@@ -8,23 +8,22 @@ namespace Education.Models
         public Guid Id { get; set; }
 
         [Required]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = null!;
 
         [Required, EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required]
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = null!;
 
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         public DateTime BirthDate { get; set; }
 
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
-        // New Role Property
-        public string Role { get; set; } = "Student"; // Default role is Student
+        public string Role { get; set; } = "Student"; // Default role
     }
 }
