@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace Education.Services
 {
-    public interface ICourseService
+    public interface ILessonService
     {
-        Task<Course> CreateCourseAsync(CourseCreateDto dto, string teacherId);
+        Task<Lesson> CreateLessonAsync(LessonCreateDto dto, string teacherId);
     }
 }

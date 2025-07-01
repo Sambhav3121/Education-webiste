@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Education.Models
@@ -24,6 +25,9 @@ namespace Education.Models
 
         public string? PhoneNumber { get; set; }
 
-        public string Role { get; set; } = "Student"; // Default role
+        public string Role { get; set; } = "Student";
+
+        // Add this navigation property for the courses the user teaches
+        public ICollection<Course> Courses { get; set; } = new List<Course>();
     }
 }

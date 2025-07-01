@@ -1,5 +1,7 @@
 /Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/appsettings.Development.json
 /Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/appsettings.json
+/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package-lock.json
+/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package.json
 /Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/Education
 /Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/Education.deps.json
 /Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/Education.runtimeconfig.json
@@ -115,5 +117,3 @@
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/Education.pdb
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/Education.genruntimeconfig.cache
 /Users/sambhavbajaj/Desktop/Website/Education/obj/Debug/net8.0/ref/Education.dll
-/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package-lock.json
-/Users/sambhavbajaj/Desktop/Website/Education/bin/Debug/net8.0/package.json
